@@ -1,10 +1,14 @@
 ---
-title: "Current data for 2026 DRC BDBV Outbreadk"
+title: "Current data for 2026 DRC BDBV Outbreak"
 author: "Noam Ross"
 date: now
 ---
 
 This page shows current data from the 2026 DRC BDBV outbreak. The data are updated automatically from the [INRB-UMIE repository](https://github.com/INRB-UMIE/BDBV2026-Data)
+
+<style>
+
+</style>
 
 ```{r setup}
 #| include: false
@@ -12,10 +16,24 @@ library(leaflet)
 targets::tar_option_set(
   repository = targets::tar_repository_cas_local()
 )
-targets::tar_load(drc_bdbv_leaflet)
+targets::tar_load(
+  c(drc_bdbv_leaflet, cases, last_data_update),
+  store = "../_targets"
+)
+case_file_name <- glue::glue(
+  "case-date-INRB-UMIE-{format(Sys.Date(), '%Y-%m-%d')}.csv"
+)
+output_dir <- Sys.getenv("QUARTO_PROJECT_OUTPUT_DIR", unset = ".")
+readr::write_csv(
+  cases,
+  file.path(output_dir, case_file_name)
+)
 ```
+
+Download the current case data [here](`r case_file_name`). (Last data update: `r last_data_update`)
 
 ```{r}
 #| echo: false
+#| column: screen
 drc_bdbv_leaflet
-``` 
+```
