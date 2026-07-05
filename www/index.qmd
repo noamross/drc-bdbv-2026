@@ -1,0 +1,21 @@
+---
+title: "Current data for 2026 DRC BDBV Outbreadk"
+author: "Noam Ross"
+date: now
+---
+
+This page shows current data from the 2026 DRC BDBV outbreak. The data are updated automatically from the [INRB-UMIE repository](https://github.com/INRB-UMIE/BDBV2026-Data)
+
+```{r setup}
+#| include: false
+library(leaflet)
+targets::tar_option_set(
+  repository = targets::tar_repository_cas_local()
+)
+targets::tar_load(drc_bdbv_leaflet)
+```
+
+```{r}
+#| echo: false
+drc_bdbv_leaflet
+``` 

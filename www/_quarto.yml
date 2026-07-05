@@ -1,0 +1,27 @@
+project:
+  type: website
+  preview:
+    port: 4000
+    host: 0.0.0.0
+    browser: false
+
+website:
+  site-url: "https://noamross.github.io/drc-bdbv-2026/"
+  title: "Data from DRC BDBD 2026 Outbreak"
+  draft-mode: unlinked
+
+execute:
+  freeze: auto
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+    css: styles.css
+    toc: true
+
+editor: 
+  markdown: 
+    canonical: true
+    wrap: sentence
