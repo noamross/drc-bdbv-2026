@@ -26,7 +26,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v6
 
-      - name: Set up Grant Watch dependencies
+      - name: Set up dependencies
         id: nrdeps
         uses: noamross/nrenv/.github/actions/setup-nr-deps@main
         with:
