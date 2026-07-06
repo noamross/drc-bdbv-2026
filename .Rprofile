@@ -12,11 +12,17 @@ load_env <- function() {
 }
 load_env()
 
+repos <- c(
+  P3M = "https://p3m.dev/all/latest",
+  CRAN = "https://cran.rstudio.com/"
+)
 options(
-  repos = c(
-    P3M = "https://p3m.dev/all/latest",
-    CRAN = "https://cran.rstudio.com/"
-  ),
+  repos = repos,
+  # renv::restore() prefers renv.lock's baked-in R.Repositories over
+  # getOption("repos") unless this is set — without it, restore() silently
+  # falls back to the lockfile's plain (non-RSPM) CRAN mirror and builds
+  # everything from source despite pkgType = "binary".
+  renv.config.repos.override = repos,
   pkgType = "binary",
   renv.config.auto.snapshot = FALSE, ## Attempt to keep renv.lock updated automatically
   renv.config.rspm.enabled = TRUE, ## Use RStudio Package manager for pre-built package binaries
