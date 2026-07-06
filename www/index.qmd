@@ -6,6 +6,8 @@ date: now
 
 This page shows current data from the 2026 DRC BDBV outbreak. The data are updated automatically from the [INRB-UMIE repository](https://github.com/INRB-UMIE/BDBV2026-Data)
 
+Only raw data from confirmed cases are shown here. For data with more context, see the [INRB-UMIE dashboard](https://inrb-umie.github.io/BDBV2026-Epidemic_Dashboard/), or [the current forecast estimates by Abbot et. al.](https://epiforecasts.io/BVDOutbreakSize/stable/summary).
+
 <style>
 
 </style>
