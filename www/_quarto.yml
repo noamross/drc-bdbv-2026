@@ -9,7 +9,7 @@ project:
 
 website:
   site-url: "https://noamross.github.io/drc-bdbv-2026/"
-  title: "Data from DRC BDBD 2026 Outbreak"
+  title: "Data from DRC BDBV 2026 Outbreak"
   draft-mode: unlinked
 
 execute:

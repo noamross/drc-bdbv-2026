@@ -74,5 +74,23 @@ targets_bdbv <- c(
       tar_target(
         packages = c("dplyr", "leaflet", "sf")
       )
+
+    case_data_csv <- {
+      # Reference `last_data_update` as a bare symbol (not inside the glue
+      # string) so targets detects it as an upstream dependency.
+      date_str <- format(last_data_update, "%Y-%m-%d")
+      path <- fs::path(
+        "www",
+        glue::glue("case-data-INRB-UMIE-{date_str}.csv")
+      )
+      cases |>
+        dplyr::select(-tar_group) |>
+        readr::write_csv(path)
+      path
+    } |>
+      tar_target(
+        format = "file",
+        packages = c("readr", "glue", "fs", "dplyr")
+      )
   })
 )

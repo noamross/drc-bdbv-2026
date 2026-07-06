@@ -21,16 +21,12 @@ targets::tar_option_set(
   repository = targets::tar_repository_cas_local()
 )
 targets::tar_load(
-  c(drc_bdbv_leaflet, cases, last_data_update),
+  c(drc_bdbv_leaflet, last_data_update, case_data_csv),
   store = fs::path(wd, "_targets")
 )
-case_file_name <- glue::glue(
-  "case-data-INRB-UMIE-{format(last_data_update, '%Y-%m-%d')}.csv"
-)
-readr::write_csv(
-  cases,
-  case_file_name
-)
+# `case_data_csv` is a standalone file target (see _targets_bdbv.R). Link to it
+# by basename; the file is copied to the site root by the `resources` glob.
+case_file_name <- basename(case_data_csv)
 ```
 
 Download the current case data [here](`r case_file_name`). (Last data update: `r last_data_update`)
