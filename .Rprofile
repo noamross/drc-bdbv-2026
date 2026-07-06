@@ -14,7 +14,7 @@ load_env()
 
 options(
   repos = c(
-    PPM = "https://p3m.dev/all/latest",
+    P3M = "https://p3m.dev/all/latest",
     CRAN = "https://cran.rstudio.com/"
   ),
   pkgType = "binary",
