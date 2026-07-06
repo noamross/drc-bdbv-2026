@@ -28,6 +28,7 @@ case_file_name <- glue::glue(
   "case-data-INRB-UMIE-{format(Sys.Date(), '%Y-%m-%d')}.csv"
 )
 output_dir <- Sys.getenv("QUARTO_PROJECT_OUTPUT_DIR", unset = "_site")
+fs::dir_create(output_dir)
 readr::write_csv(
   cases,
   file.path(output_dir, case_file_name)
