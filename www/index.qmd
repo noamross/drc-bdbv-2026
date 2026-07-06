@@ -25,7 +25,7 @@ targets::tar_load(
   store = fs::path(wd, "_targets")
 )
 case_file_name <- glue::glue(
-  "case-data-INRB-UMIE-{format(Sys.Date(), '%Y-%m-%d')}.csv"
+  "case-data-INRB-UMIE-{format(last_data_update, '%Y-%m-%d')}.csv"
 )
 readr::write_csv(
   cases,
