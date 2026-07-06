@@ -14,13 +14,15 @@ Only raw data from confirmed cases are shown here. For data with more context, s
 
 ```{r setup}
 #| include: false
+
 library(leaflet)
+wd <- gert::git_info()$path
 targets::tar_option_set(
   repository = targets::tar_repository_cas_local()
 )
 targets::tar_load(
   c(drc_bdbv_leaflet, cases, last_data_update),
-  store = "../_targets"
+  store = fs::path(wd, "_targets")
 )
 case_file_name <- glue::glue(
   "case-date-INRB-UMIE-{format(Sys.Date(), '%Y-%m-%d')}.csv"
