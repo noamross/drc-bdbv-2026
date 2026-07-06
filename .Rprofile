@@ -30,7 +30,8 @@ options(
   gargle_oauth_email = Sys.getenv(
     "GARGLE_OAUTH_EMAIL",
     unset = NA
-  )
+  ),
+  renv.config.install.jobs = 8
 )
 Sys.setenv("RENV_WATCHDOG_ENABLED" = as.character(is_targets))
 source("renv/activate.R")
