@@ -1,7 +1,7 @@
 ---
 title: "Current data for 2026 DRC BDBV Outbreak"
 author: "Noam Ross"
-date: now
+date: "`r format(Sys.time(), '%Y-%m-%d %H:%M:%S', tz = 'Africa/Lubumbashi')` CAT (UTC+02:00)"
 ---
 
 This page shows current data from the 2026 DRC BDBV outbreak. The data are updated automatically from the [INRB-UMIE repository](https://github.com/INRB-UMIE/BDBV2026-Data)
@@ -29,7 +29,7 @@ targets::tar_load(
 case_file_name <- basename(case_data_csv)
 ```
 
-Download the current case data [here](`r case_file_name`). (Last data update: `r last_data_update`)
+Download the current case data [here](`r case_file_name`). (Last data update: `r format(last_data_update, '%Y-%m-%d %H:%M:%S', tz = 'Africa/Lubumbashi')` CAT (UTC+02:00))
 
 ```{r}
 #| echo: false
