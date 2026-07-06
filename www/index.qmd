@@ -25,9 +25,9 @@ targets::tar_load(
   store = fs::path(wd, "_targets")
 )
 case_file_name <- glue::glue(
-  "case-date-INRB-UMIE-{format(Sys.Date(), '%Y-%m-%d')}.csv"
+  "case-data-INRB-UMIE-{format(Sys.Date(), '%Y-%m-%d')}.csv"
 )
-output_dir <- Sys.getenv("QUARTO_PROJECT_OUTPUT_DIR", unset = ".")
+output_dir <- Sys.getenv("QUARTO_PROJECT_OUTPUT_DIR", unset = "_site")
 readr::write_csv(
   cases,
   file.path(output_dir, case_file_name)
