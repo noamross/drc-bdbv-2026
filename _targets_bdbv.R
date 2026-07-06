@@ -16,7 +16,8 @@ targets_bdbv <- c(
   ),
   tar_quarto(
     drc_map_site,
-    "www"
+    "www",
+    quiet = FALSE
   ),
   tar_assign({
     last_data_update <- max(

@@ -38,7 +38,13 @@ jobs:
           nrenv-token: ${{ secrets.NRENV_WRITE_TOKEN }}
           # Persist Quarto's freeze directory across runs. Cached to a staging
           # path so committed freeze files can take precedence after restore.
-          cache-dirs: www/_freeze_cache
+          cache-dirs: |
+            www/_freeze_cache
+            _targets/cas
+          # Bumped to break out of a stale renv cache (source-built packages
+          # cached before pkgType=binary was set in .Rprofile; restore-keys
+          # kept resurrecting it across lockfile changes).
+          cache-key-prefix: nr-v2
 
       - name: Merge freeze cache with committed files
         run: |
