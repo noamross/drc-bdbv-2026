@@ -1,4 +1,4 @@
-on: 
+on:
   pull_request:
   workflow_dispatch:
   push:
@@ -9,14 +9,20 @@ on:
 
 permissions:
   checks: write
-  contents: write
+  contents: read
   packages: read
   actions: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 name: Publish Website
 
 jobs:
-  build-publish:
+  build:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/noamross/nrenv/nrimg:latest
@@ -62,13 +68,27 @@ jobs:
           targets::tar_make(drc_map_site)
         shell: Rscript {0}
 
-      - name: Disable Jekyll processing
-        run: touch www/_site/.nojekyll
-
-      - name: Deploy to GitHub Pages
+      - name: Setup Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: JamesIves/github-pages-deploy-action@v4.5.0
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
         with:
-          clean: false
-          branch: gh-pages
-          folder: www/_site
+          path: www/_site
+
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
