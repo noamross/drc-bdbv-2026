@@ -19,6 +19,12 @@ targets_bdbv <- c(
     "www"
   ),
   tar_assign({
+    last_data_update <- max(
+      gh_raw_url_commit_date(insp_sitrep_cum_cases_csv_url),
+      gh_raw_url_commit_date(insp_sitrep_cum_deaths_csv_url)
+    ) |>
+      tar_target(packages = "gh")
+
     insp_sitrep_cum_cases <- readr::read_csv(
       insp_sitrep_cum_cases_csv,
       col_types = "ccc",

@@ -38,6 +38,7 @@ make_health_area_plot <- function(cases) {
       breaks = integer_breaks(),
       limits = c(0, max(c(5, plot_data$count)))
     ) +
+    scale_fill_brewer(palette = "Set2", labels = c("Cases", "Deaths")) +
     labs(
       title = glue::glue(
         "Daily confirmed cases and deaths in {area_name} Health Zone"
@@ -46,9 +47,10 @@ make_health_area_plot <- function(cases) {
     theme(
       axis.title = element_blank(),
       legend.position = "inside",
-      legend.position.inside = c(0.05, 0.9),
+      legend.position.inside = c(0.1, 0.8),
       legend.title = element_blank(),
-      legend.text = element_text(size = 10)
+      legend.text = element_text(size = 10),
+      legend.background = element_rect(fill = "#FFFFFFAA", color = NA),
     )
 
   plot_svg <- inline_html_svg_plot(
@@ -60,10 +62,12 @@ make_health_area_plot <- function(cases) {
     pointsize = 12
   )
 
-  bar_tooltips <- scales::comma(c(
-    plot_data |> filter(type == "cases") |> pull(count),
-    plot_data |> filter(type == "deaths") |> pull(count)
-  ))
+  day_tooltip <- glue::glue(
+    "{format(area_cases$date, '%Y-%m-%d')}:\n",
+    "{scales::comma(area_cases$cases)} Cases, ",
+    "{scales::comma(area_cases$deaths)} Deaths"
+  )
+  bar_tooltips <- c(day_tooltip, day_tooltip)
   plot_svg <- svg_add_bar_tooltips(plot_svg, bar_tooltips)
 
   plot_out <- tibble(

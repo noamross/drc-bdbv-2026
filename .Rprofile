@@ -17,6 +17,7 @@ options(
     PPM = "https://p3m.dev/all/latest",
     CRAN = "https://cran.rstudio.com/"
   ),
+  pkgType = "binary",
   renv.config.auto.snapshot = FALSE, ## Attempt to keep renv.lock updated automatically
   renv.config.rspm.enabled = TRUE, ## Use RStudio Package manager for pre-built package binaries
   renv.config.install.shortcuts = TRUE, ## Use the existing local library to fetch copies of packages for renv
