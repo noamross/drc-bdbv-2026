@@ -4,8 +4,7 @@ library(tarchetypes)
 tar_option_set(
   controller = crew::crew_controller_local(
     name = "primary",
-    workers = as.integer(Sys.getenv("NPROC", unset = "12")),
-    local_log_directory = "crew_logs"
+    workers = as.integer(Sys.getenv("NPROC", unset = "4"))
   ),
   format = "qs",
   repository = tar_repository_cas_local(consistent = TRUE),
