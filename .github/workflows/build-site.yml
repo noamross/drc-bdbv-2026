@@ -50,6 +50,8 @@ jobs:
           fi
 
       - name: Render Quarto project
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           targets::tar_make(drc_map_site)
         shell: Rscript {0}

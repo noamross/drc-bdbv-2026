@@ -33,7 +33,7 @@ options(
   ),
   renv.config.install.jobs = 8
 )
-Sys.setenv("RENV_WATCHDOG_ENABLED" = as.character(is_targets))
+Sys.setenv("RENV_WATCHDOG_ENABLED" = as.character(!is_targets))
 source("renv/activate.R")
 load_env() # reload project .env files, after renv/activate.R runs renv::load() which reads user's .renviron
 
