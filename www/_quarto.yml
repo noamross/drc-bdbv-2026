@@ -13,7 +13,7 @@ website:
   draft-mode: unlinked
 
 execute:
-  freeze: auto
+  freeze: false
 
 format:
   html:

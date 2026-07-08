@@ -45,38 +45,7 @@ jobs:
           extra-apt-packages: ""
           # lockfile: renv.lock   # override if not at the repo root
           nrenv-token: ${{ secrets.NRENV_WRITE_TOKEN }}
-          # Persist Quarto's freeze directory and the targets metadata db
-          # across runs, so tar_make() can skip up-to-date targets instead of
-          # recomputing them (the CAS store alone doesn't do this: skip
-          # decisions need the meta db, which normally only advances via a
-          # human's local commit). Cached to staging paths so committed files
-          # take precedence after restore.
-          cache-dirs: |
-            www/_freeze_cache
-            _targets/cas
-            _targets/meta_cache
-          # Bumped to break out of a stale renv cache (source-built packages
-          # cached before pkgType=binary was set in .Rprofile; restore-keys
-          # kept resurrecting it across lockfile changes).
           cache-key-prefix: nr-v2
-
-      - name: Merge freeze cache with committed files
-        run: |
-          if [ -d www/_freeze_cache ]; then
-            # Committed files overwrite cached ones; cache-only files are kept
-            cp -r www/_freeze/. www/_freeze_cache/
-            rm -rf www/_freeze
-            mv www/_freeze_cache www/_freeze
-          fi
-
-      - name: Merge targets metadata cache with committed files
-        run: |
-          if [ -d _targets/meta_cache ]; then
-            # -n: don't clobber the committed _targets/meta/meta with a
-            # possibly-stale cached copy; only fill in cache-only files.
-            cp -rn _targets/meta_cache/. _targets/meta/
-            rm -rf _targets/meta_cache
-          fi
 
       - name: Render Quarto project
         env:
