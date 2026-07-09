@@ -1,18 +1,30 @@
 targets_bdbv <- c(
-  tar_download(
+  tar_url(
+    insp_sitrep_cum_cases_csv_url,
+    "https://raw.githubusercontent.com/INRB-UMIE/BDBV2026-Data/refs/heads/main/data/insp_sitrep/processed/insp_sitrep__cumulative_confirmed_cases__daily.csv"
+  ),
+  tar_file(
     insp_sitrep_cum_cases_csv,
-    url = "https://raw.githubusercontent.com/INRB-UMIE/BDBV2026-Data/refs/heads/main/data/insp_sitrep/processed/insp_sitrep__cumulative_confirmed_cases__daily.csv",
-    path = "data/insp_sitrep_cases.csv"
+    download_retry(insp_sitrep_cum_cases_csv_url, "data/insp_sitrep_cases.csv"),
+    packages = "httr2"
   ),
-  tar_download(
+  tar_url(
+    insp_sitrep_cum_deaths_csv_url,
+    "https://raw.githubusercontent.com/INRB-UMIE/BDBV2026-Data/refs/heads/main/data/insp_sitrep/processed/insp_sitrep__cumulative_confirmed_deaths__daily.csv"
+  ),
+  tar_file(
     insp_sitrep_cum_deaths_csv,
-    url = "https://raw.githubusercontent.com/INRB-UMIE/BDBV2026-Data/refs/heads/main/data/insp_sitrep/processed/insp_sitrep__cumulative_confirmed_deaths__daily.csv",
-    path = "data/insp_sitrep_deaths.csv"
+    download_retry(insp_sitrep_cum_deaths_csv_url, "data/insp_sitrep_deaths.csv"),
+    packages = "httr2"
   ),
-  tar_download(
+  tar_url(
+    drc_health_zones_geojson_url,
+    "https://raw.githubusercontent.com/INRB-UMIE/BDBV2026-Data/refs/heads/main/build/drc_health_zones.geojson"
+  ),
+  tar_file(
     drc_health_zones_geojson,
-    url = "https://raw.githubusercontent.com/INRB-UMIE/BDBV2026-Data/refs/heads/main/build/drc_health_zones.geojson",
-    path = "data/drc_health_zones.geojson"
+    download_retry(drc_health_zones_geojson_url, "data/drc_health_zones.geojson"),
+    packages = "httr2"
   ),
   tar_quarto(
     drc_map_site,
