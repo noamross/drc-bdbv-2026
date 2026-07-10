@@ -38,6 +38,9 @@ targets_bdbv <- c(
     ) |>
       tar_target(packages = "gh")
 
+    latest_sitrep <- get_latest_sitrep() |>
+      tar_target(packages = c("gh", "lubridate"))
+
     insp_sitrep_cum_cases <- readr::read_csv(
       insp_sitrep_cum_cases_csv,
       col_types = "ccc",
@@ -62,6 +65,9 @@ targets_bdbv <- c(
       group_by(nom) |>
       targets::tar_group() |>
       tar_target(iteration = "group")
+
+    last_reported_date <- max(cases$date) |>
+      tar_target()
 
     case_plots <- make_health_area_plot(cases) |>
       tar_target(

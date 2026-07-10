@@ -7,7 +7,7 @@ execute:
   freeze: false
 ---
 
-This page shows current data from the 2026 DRC BDBV outbreak. The data are updated automatically from the [INRB-UMIE repository](https://github.com/INRB-UMIE/BDBV2026-Data)
+This page shows current data from the 2026 DRC BDBV outbreak. The data are updated automatically from the [INRB-UMIE repository](https://github.com/INRB-UMIE/BDBV2026-Data).
 
 Only raw data from confirmed cases are shown here. There are no forecasts, or corrections for likely incomplete reporting of recent cases. For data with more context, see the [INRB-UMIE dashboard](https://inrb-umie.github.io/BDBV2026-Epidemic_Dashboard/), or [the current forecast estimates by Abbot et. al.](https://epiforecasts.io/BVDOutbreakSize/stable/summary).
 
@@ -24,7 +24,13 @@ targets::tar_option_set(
   repository = targets::tar_repository_cas_local()
 )
 targets::tar_load(
-  c(drc_bdbv_leaflet, last_data_update, case_data_csv),
+  c(
+    drc_bdbv_leaflet,
+    last_data_update,
+    case_data_csv,
+    last_reported_date,
+    latest_sitrep
+  ),
   store = fs::path(wd, "_targets")
 )
 # `case_data_csv` is a standalone file target (see _targets_bdbv.R). Link to it
@@ -32,7 +38,9 @@ targets::tar_load(
 case_file_name <- basename(case_data_csv)
 ```
 
-Download the current case data [here](`r case_file_name`). (Last data update: `r format(last_data_update, '%Y-%m-%d %H:%M:%S', tz = 'Africa/Lubumbashi')` CAT (UTC+02:00))
+Last date with reported data: **`r format(last_reported_date, '%Y-%m-%d')`** (from [SitRep MVE `r sprintf('%03d', latest_sitrep$number)`-2026](`r latest_sitrep$url`),  `r format(latest_sitrep$report_date, '%Y-%m-%d')`).
+
+Download the current case data [here](`r case_file_name`).
 
 ```{r}
 #| echo: false

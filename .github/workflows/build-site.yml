@@ -5,7 +5,8 @@ on:
     branches:
       - main
   schedule:
-    - cron: '0 0 * * *'  # every day at midnight UTC
+    - cron: '0 0 * * *'   # every day at midnight UTC — always builds
+    - cron: '0 * * * *'   # hourly — builds only if source data changed
 
 permissions:
   checks: write
@@ -22,7 +23,72 @@ concurrency:
 name: Publish Website
 
 jobs:
+  check-data-update:
+    # Fast, dependency-free check of whether the upstream data repo has new
+    # commits since we last saw them, so the hourly cron doesn't have to pay
+    # for a full container + render when nothing changed. Non-schedule events
+    # (push/PR/workflow_dispatch) and the daily midnight cron always build
+    # regardless of this job's result — see build-publish's `if`.
+    runs-on: ubuntu-latest
+    outputs:
+      updated: ${{ steps.check.outputs.updated }}
+    steps:
+      - name: Restore last known data state
+        uses: actions/cache/restore@v4
+        with:
+          path: .data-check-state
+          key: data-check-state-${{ github.run_id }}
+          restore-keys: |
+            data-check-state-
+
+      - name: Check upstream data for changes
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          repo="INRB-UMIE/BDBV2026-Data"
+          paths=(
+            "data/insp_sitrep/processed/insp_sitrep__cumulative_confirmed_cases__daily.csv"
+            "data/insp_sitrep/processed/insp_sitrep__cumulative_confirmed_deaths__daily.csv"
+          )
+
+          latest=""
+          for p in "${paths[@]}"; do
+            sha=$(curl -sf -H "Authorization: Bearer ${GH_TOKEN}" \
+              "https://api.github.com/repos/${repo}/commits?path=${p}&per_page=1" \
+              | jq -r '.[0].sha')
+            latest="${latest}${sha}"
+          done
+
+          prev="none"
+          if [ -f .data-check-state ]; then
+            prev="$(cat .data-check-state)"
+          fi
+
+          echo "$latest" > .data-check-state
+
+          if [ "$latest" != "$prev" ]; then
+            echo "Upstream data changed ($prev -> $latest)."
+            echo "updated=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No upstream data change since last check."
+            echo "updated=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Save current data state
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .data-check-state
+          key: data-check-state-${{ github.run_id }}
+
   build-publish:
+    needs: check-data-update
+    if: |
+      github.event_name != 'schedule' ||
+      github.event.schedule == '0 0 * * *' ||
+      needs.check-data-update.outputs.updated == 'true'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -55,7 +121,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Setup Pages
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         uses: actions/configure-pages@v6
 
       - name: Remove stale Pages artifact
@@ -63,7 +129,7 @@ jobs:
         # artifacts already uploaded under the same run id; a leftover
         # github-pages artifact from a prior attempt makes deploy-pages
         # error with "Multiple artifacts named github-pages were found".
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -74,12 +140,12 @@ jobs:
           done
 
       - name: Upload artifact
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         uses: actions/upload-pages-artifact@v5
         with:
           path: www/_site
 
       - name: Deploy to GitHub Pages
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
         id: deployment
         uses: actions/deploy-pages@v5
