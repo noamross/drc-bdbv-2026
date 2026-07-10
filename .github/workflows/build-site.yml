@@ -34,7 +34,7 @@ jobs:
       updated: ${{ steps.check.outputs.updated }}
     steps:
       - name: Restore last known data state
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: .data-check-state
           key: data-check-state-${{ github.run_id }}
